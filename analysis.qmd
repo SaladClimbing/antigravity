@@ -15,17 +15,26 @@ library(nycflights13)
 
 ```{r}
 #| cache: true
-# Count unique named storms per year and plot the trend over time
+# Count unique named storms per year by storm type and plot stacked area chart
 storms |>
-  distinct(year, name) |>
-  count(year) |>
-  ggplot(aes(x = year, y = n)) +
-  geom_line() +
-  geom_point() +
+  filter(status %in% c("tropical depression", "tropical storm", "hurricane")) |>
+  mutate(status = factor(status, levels = c("tropical depression", "tropical storm", "hurricane"))) |>
+  distinct(year, name, status) |>
+  count(year, status) |>
+  ggplot(aes(x = year, y = n, fill = status)) +
+  geom_area() +
+  scale_fill_manual(
+    values = c(
+      "tropical depression" = "lightblue",
+      "tropical storm" = "orange",
+      "hurricane" = "darkred"
+    )
+  ) +
   labs(
-    title = "Number of Named Tropical Storms per Year",
+    title = "Number of Named Storms per Year by Type",
     x = "Year",
-    y = "Number of Storms"
+    y = "Number of Storms",
+    fill = "Storm Type"
   ) +
   theme_minimal()
 ```
