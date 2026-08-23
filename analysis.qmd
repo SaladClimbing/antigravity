@@ -1,0 +1,43 @@
+---
+title: "Exploring Storms and Flights"
+author: "Andrew Lucas"
+format: html
+execute:
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(tidyverse)
+library(nycflights13)
+```
+
+```{r}
+#| cache: true
+# Count unique named storms per year and plot the trend over time
+storms |>
+  distinct(year, name) |>
+  count(year) |>
+  ggplot(aes(x = year, y = n)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Number of Named Tropical Storms per Year",
+    x = "Year",
+    y = "Number of Storms"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+flights_jfk <- flights |>
+  filter(origin == "JFK") |>
+  select(dep_delay, arr_delay, carrier)
+```
+
+```{r}
+flights_jfk |>
+  ggplot(aes(x = dep_delay, y = arr_delay, color = carrier)) +
+  geom_point()
+```
